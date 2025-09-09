@@ -1,0 +1,38 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "coding-proxy",
+  "main": "src/main.ts",
+  "compatibility_date": "2025-05-05",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "upload_source_maps": true,
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "coding-proxy"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "coding-proxy",
+      "binding": "PRIVATE_FILES"
+    }
+  ],
+  "vars": {
+    "GITHUB_URL": "https://github.com/shchahrykovich/coding-proxy",
+    "ALLOW_TO_CREATE_MORE_THAN_ONE_TENANT": "false"
+  }
+}

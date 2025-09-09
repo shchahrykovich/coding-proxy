@@ -1,0 +1,184 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model Tenants {
+  id        Int      @id @default(autoincrement())
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Proxies {
+  id            Int      @id @default(autoincrement())
+  tenantId      Int
+  name          String?
+  userId        String?
+  apiKey        String   @unique
+  totalRequests Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model WorkSessions {
+  id                     Int      @id @default(autoincrement())
+  tenantId               Int
+  proxyId                Int
+  provider               String
+  providerSpecificId     String   @unique
+  contributorId          Int
+  providerContributorId  String
+  accountId              String
+  analyticsJson          String   @default("{}")
+  title                  String   @default("")
+  project                String   @default("")
+  projectId              Int?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  lastReceivedRequestAt  DateTime @default(now())
+  lastProcessedRequestId Int?
+  totalRequests          Int      @default(0)
+  totalInputTokens       Int      @default(0)
+  totalOutputTokens      Int      @default(0)
+}
+
+model Projects {
+  id                Int      @id @default(autoincrement())
+  tenantId          Int
+  name              String   @default("")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  totalRequests     Int      @default(0)
+  totalInputTokens  Int      @default(0)
+  totalOutputTokens Int      @default(0)
+
+  @@unique([tenantId, name])
+}
+
+model MemoryRecords {
+  id            Int      @id @default(autoincrement())
+  tenantId      Int
+  projectId     Int?
+  workSessionId Int      @default(0)
+  title         String   @default("")
+  body          String   @default("")
+  createdAt     DateTime @default(now())
+}
+
+model ModelUsages {
+  id            Int      @id @default(autoincrement())
+  tenantId      Int
+  workSessionId Int
+  proxyId       Int
+  provider      String
+  contributorId Int
+  projectId     Int?
+  accountId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  modelName     String
+  inputTokens   Int      @default(0)
+  outputTokens  Int      @default(0)
+}
+
+model Contributors {
+  id                 Int      @id @default(autoincrement())
+  tenantId           Int
+  provider           String
+  proxyId            Int      @default(0)
+  name               String   @default("Noname")
+  providerSpecificId String
+  accountId          String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  tenantId  Int
+  key       String
+  value     String
+  isPublic  Boolean  @default(false)
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, key])
+}
+
+model ProviderRequests {
+  id                    Int      @id @default(autoincrement())
+  tenantId              Int
+  proxyId               Int
+  provider              String
+  workSessionId         Int?
+  contributorId         Int?
+  providerContributorId String?
+  contributorAccountId  String?
+  clientVersion         String?
+  generatedId           String   @unique
+  receivedAt            DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// Auth models
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  tenantId      Int       @map("tenant_id")
+  name          String?
+  email         String    @unique
+  emailVerified DateTime? @map("email_verified")
+  password      String
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
