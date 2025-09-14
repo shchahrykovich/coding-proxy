@@ -80,7 +80,8 @@ async function updateDbRecords(db: PrismaClient,
         await db.memoryRecords.deleteMany({
             where: {
                 projectId: project.id,
-                tenantId: m.tenantId
+                tenantId: m.tenantId,
+                workSessionId: session.id
             }
         });
 

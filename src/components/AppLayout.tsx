@@ -56,7 +56,7 @@ export default function AppLayout({ children, title, icon }: AppLayoutProps) {
                     {!collapsed && (
                         <Link href="/" style={{ textDecoration: 'none' }}>
                             <Text strong style={{ marginLeft: '12px', fontSize: '16px' }}>
-                                Codding Proxy
+                                Coding Proxy
                             </Text>
                         </Link>
 
