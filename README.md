@@ -4,7 +4,7 @@
 
 A proxy for popular AI Coding Assistants. The proxy adds a shared memory and monitors AI adoption. [CodingProxy.com](https://codingproxy.com)
 
-## Features
+### Features
 - Shared memory across sessions and users
 - Monitors usage and adoption of AI coding assistants
 - Supports multiple AI coding assistants
@@ -13,6 +13,9 @@ A proxy for popular AI Coding Assistants. The proxy adds a shared memory and mon
 ## Deploy to CloudFlare
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/shchahrykovich/coding-proxy)
+
+### See it in action
+[![Watch the video](https://img.youtube.com/vi/mMWbPDLgqgw/sddefault.jpg)](https://youtu.be/mMWbPDLgqgw)
 
 ### Steps to deploy
 1. Make sure you have paid CloudFlare account, 5 USD per month
